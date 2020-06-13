@@ -1,6 +1,5 @@
 #This hash sign represents a beginning of a comment. You will find many such below in the code telling you to make necessary changes according to your device.
 # Make sure you have a microphone connected to run this program.
-print('This program (meant specially for physically handicapped) operates the input devices(mouse and keyboard) on your command.')
 # please install following libraries
 import pyautogui
 import mysql.connector
