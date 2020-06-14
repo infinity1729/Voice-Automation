@@ -12,6 +12,8 @@ import win32com.client
 import random
 import webbrowser
 import cv2
+import wave
+import pyaudio
 path="'C:\Program Files (x86)\Google\Chrome\Application\chrome.exe' %s"#Enter file location of the default browser for this application
 google="http://www.google.com/search?q="
 speak = win32com.client.Dispatch('Sapi.SpVoice')
@@ -27,7 +29,7 @@ try:
     a4=['press']
     a5=['show commands']
     a8=['drag to position(x,y)','drag up by 100','drag down by 100','drag right by 100','drag left by 100']
-    a7=['open calculator','search','quit','shutdown','restart','capture image','capture screenshot']
+    a7=['open calculator','search','quit','shutdown','restart','capture image','capture screenshot','record audio for 5 seconds']
     bb=a1+a2+a3+a4+a5+a7+a8
     a6=['-','=',',',"'",'.','tab', 'enter', 'space', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'accept', 'add', 'alt', 'altleft', 'altright', 'apps', 'backspace', 'browserback', 'browserfavorites', 'browserforward', 'browserhome', 'browserrefresh', 'browsersearch', 'browserstop', 'capslock', 'clear', 'convert', 'ctrl', 'ctrlleft', 'ctrlright', 'decimal', 'del', 'delete', 'divide', 'down', 'end', 'enter', 'esc', 'escape', 'execute', 'f1', 'f10', 'f11', 'f12', 'f13', 'f14', 'f15', 'f16', 'f17', 'f18', 'f19', 'f2', 'f20', 'f21', 'f22', 'f23', 'f24', 'f3', 'f4', 'f5', 'f6', 'f7', 'f8', 'f9', 'final', 'fn', 'hanguel', 'hangul', 'hanja', 'help', 'home', 'insert', 'junja', 'kana', 'kanji', 'launchapp1', 'launchapp2', 'launchmail', 'launchmediaselect', 'left', 'modechange', 'multiply', 'nexttrack', 'nonconvert', 'num0', 'num1', 'num2', 'num3', 'num4', 'num5', 'num6', 'num7', 'num8', 'num9', 'numlock', 'pagedown', 'pageup', 'pause', 'pgdn', 'pgup', 'playpause', 'prevtrack', 'print', 'printscreen', 'prntscrn', 'prtsc', 'prtscr', 'return', 'right', 'scrolllock', 'select', 'separator', 'shift', 'shiftleft', 'shiftright', 'sleep', 'space', 'stop', 'subtract', 'tab', 'up', 'volumedown', 'volumemute', 'volumeup', 'win', 'winleft', 'winright', 'yen', 'command', 'option', 'optionleft', 'optionright']
     conn=mysql.connector.connect(host='localhost',user='root',password='1234')#change hostname,usernam,password according to your mysql
@@ -185,7 +187,7 @@ try:
         a3=['type( type python)']
         a4=['press (after this the name of keys like press ctrl a)']
         a5=['show commands']
-        a7=['open (starts any file in your computer)','search(google serch)','quit(it will end the program)','shutdown','restart','capture image','capture screenshot']
+        a7=['open (starts any file in your computer)','search(google serch)','quit(it will end the program)','shutdown','restart','capture image','capture screenshot','record audio for n seconds(specify time "n")']
 
         r=1
         a=a1+a8+a2+a3+a4+a5+a7
@@ -285,6 +287,29 @@ try:
             commands()
             cur.execute('update commands set value=value+1 where name="show commands"')
             conn.commit()
+        elif check('record',a0)==True:
+            a0=text2int(a0)
+            num=list(map(int,re.findall(r'\d+',a0)))
+            cur.execute('update commands set value=value+1 where name="record audio for 5 seconds"')
+            conn.commit()
+            print('recording')
+            speak.Speak('recording')
+            stream=pyaudio.PyAudio().open(format=pyaudio.paInt16,channels=2,rate=44100,frames_per_buffer=1024, input=True)
+            frames=[]
+            for i in range(int(44100/1024*num[0])):
+                data=stream.read(1024)
+                frames.append(data)
+            stream.stop_stream()
+            stream.close()
+            pyaudio.PyAudio().terminate()
+            aud=wave.open('recordings/recording','wb')
+            aud.setnchannels(2)
+            aud.setsampwidth(pyaudio.PyAudio().get_sample_size(pyaudio.paInt16))
+            aud.setframerate(44100)
+            aud.writeframes(b"".join(frames))
+            aud.close()
+            print('recording saved')
+            speak.Speak('recording saved')
         elif check('capture',a0)==True:
             if check('image',a0)==True:
                 speak.Speak('3')
@@ -304,10 +329,14 @@ try:
                 cv2.imwrite("images/CapturedImage.jpg",frame)
                 videoCaptureObject.release()
                 cv2.destroyAllWindows()
+                print("image saved")
+                speak.Speak("image saved")
                 cur.execute('update commands set value=value+1 where name="capture image"')
                 conn.commit()
             elif check('screen',a0)==True:
                 pyautogui.screenshot().save(r'images/CapturedScreenshot.jpg')
+                speak.Speak("screenshot saved")
+                print("screenshot saved")
                 cur.execute('update commands set value=value+1 where name="capture screnshot"')
                 conn.commit()
             else:
