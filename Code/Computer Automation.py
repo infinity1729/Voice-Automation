@@ -11,6 +11,7 @@ import os
 import win32com.client
 import random
 import webbrowser
+import cv2
 path="'C:\Program Files\Google\Chrome\Application\chrome.exe' %s"#Enter file location of the default browser for this application
 google="http://www.google.com/search?q="
 speak = win32com.client.Dispatch('Sapi.SpVoice')
@@ -26,10 +27,10 @@ try:
     a4=['press']
     a5=['show commands']
     a8=['drag to position(x,y)','drag up by 100','drag down by 100','drag right by 100','drag left by 100']
-    a7=['open calculator','search','quit','shutdown','restart']
+    a7=['open calculator','search','quit','shutdown','restart','capture image','capture screenshot']
     bb=a1+a2+a3+a4+a5+a7+a8
     a6=['-','=',',',"'",'.','tab', 'enter', 'space', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'accept', 'add', 'alt', 'altleft', 'altright', 'apps', 'backspace', 'browserback', 'browserfavorites', 'browserforward', 'browserhome', 'browserrefresh', 'browsersearch', 'browserstop', 'capslock', 'clear', 'convert', 'ctrl', 'ctrlleft', 'ctrlright', 'decimal', 'del', 'delete', 'divide', 'down', 'end', 'enter', 'esc', 'escape', 'execute', 'f1', 'f10', 'f11', 'f12', 'f13', 'f14', 'f15', 'f16', 'f17', 'f18', 'f19', 'f2', 'f20', 'f21', 'f22', 'f23', 'f24', 'f3', 'f4', 'f5', 'f6', 'f7', 'f8', 'f9', 'final', 'fn', 'hanguel', 'hangul', 'hanja', 'help', 'home', 'insert', 'junja', 'kana', 'kanji', 'launchapp1', 'launchapp2', 'launchmail', 'launchmediaselect', 'left', 'modechange', 'multiply', 'nexttrack', 'nonconvert', 'num0', 'num1', 'num2', 'num3', 'num4', 'num5', 'num6', 'num7', 'num8', 'num9', 'numlock', 'pagedown', 'pageup', 'pause', 'pgdn', 'pgup', 'playpause', 'prevtrack', 'print', 'printscreen', 'prntscrn', 'prtsc', 'prtscr', 'return', 'right', 'scrolllock', 'select', 'separator', 'shift', 'shiftleft', 'shiftright', 'sleep', 'space', 'stop', 'subtract', 'tab', 'up', 'volumedown', 'volumemute', 'volumeup', 'win', 'winleft', 'winright', 'yen', 'command', 'option', 'optionleft', 'optionright']
-    conn=mysql.connector.connect(host='localhost',user='root',passwd='1234')#change hostname,usernam,password according to your mysql
+    conn=mysql.connector.connect(host='localhost',user='root',password='1234')#change hostname,usernam,password according to your mysql
     cur=conn.cursor()
     try:
         cur.execute('create database commands')
@@ -184,7 +185,7 @@ try:
         a3=['type( type python)']
         a4=['press (after this the name of keys like press ctrl a)']
         a5=['show commands']
-        a7=['open (starts any file in your computer)','search(google serch)','quit(it will end the program)','shutdown','restart']
+        a7=['open (starts any file in your computer)','search(google serch)','quit(it will end the program)','shutdown','restart','capture image','capture screenshot']
 
         r=1
         a=a1+a8+a2+a3+a4+a5+a7
@@ -284,6 +285,32 @@ try:
             commands()
             cur.execute('update commands set value=value+1 where name="show commands"')
             conn.commit()
+        elif check('capture',a0)==True:
+            if check('image',a0)==True:
+                speak.Speak('3')
+                print(3)
+                time.sleep(0.5)
+                speak.Speak('2')
+                print(2)
+                time.sleep(0.5)
+                speak.Speak('1')
+                print(1)
+                time.sleep(0.5)
+                print("say Cheese")
+                speak.Speak("say cheese")
+                time.sleep(0.5)
+                videoCaptureObject = cv2.VideoCapture(0)
+                ret,frame = videoCaptureObject.read()
+                cv2.imwrite("images/CapturedImage.jpg",frame)
+                videoCaptureObject.release()
+                cv2.destroyAllWindows()
+                cur.execute('update commands set value=value+1 where name="capture image"')
+                conn.commit()
+            elif check('screen',a0)==True:
+                pyautogui.screenshot().save(r'images/CapturedScreenshot.jpg')
+                cur.execute('update commands set value=value+1 where name="capture screnshot"')
+                conn.commit()
+        
         elif check('quit',a0)==True:
             print('Thanks for using this program')
             speak.Speak('Thanks for using this program')
