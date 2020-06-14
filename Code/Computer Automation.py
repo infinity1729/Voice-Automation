@@ -12,7 +12,7 @@ import win32com.client
 import random
 import webbrowser
 import cv2
-path="'C:\Program Files\Google\Chrome\Application\chrome.exe' %s"#Enter file location of the default browser for this application
+path="'C:\Program Files (x86)\Google\Chrome\Application\chrome.exe' %s"#Enter file location of the default browser for this application
 google="http://www.google.com/search?q="
 speak = win32com.client.Dispatch('Sapi.SpVoice')
 speak.Rate=0.0001
@@ -310,6 +310,10 @@ try:
                 pyautogui.screenshot().save(r'images/CapturedScreenshot.jpg')
                 cur.execute('update commands set value=value+1 where name="capture screnshot"')
                 conn.commit()
+            else:
+                print('Please recheck the recognition result(if it matches with what you spoke),try to give commands more similar to predefined ones.Sorry, I am not able to detect it.')
+                speak.Speak('Please recheck the recognition result(if it matches with what you spoke),try to give commands more similar to predefined ones.Sorry, I am not able to detect it.')
+                fn()
         
         elif check('quit',a0)==True:
             print('Thanks for using this program')
