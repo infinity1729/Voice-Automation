@@ -181,13 +181,13 @@ try:
     def commands():
         print('This is the list of available commands')
         speak.Speak('This is the list of available commands')
-        a1=['move to position (x,y); maximum value:'+str(pyautogui.size())+'you present mouse location is:'+str(pyautogui.position()),'move up( specify the amount like move up by 100)','move down( move down by 100)','move right( move right by 100)','move left( move left by 100)']
-        a8=['drag to position (x,y); maximum value:'+str(pyautogui.size())+'you present mouse location is:'+str(pyautogui.position()),'drag up(specify the amount  drag up by 100)','drag down( drag down by 100)','drag right( drag right by 100)','drag left( drag left by 100)']
+        a1=['move to position (x,y); maximum value:'+str(pyautogui.size())+'your present mouse location is:'+str(pyautogui.position()),'move up( specify the amount like move up by 100)','move down( move down by 100)','move right( move right by 100)','move left( move left by 100)']
+        a8=['drag to position (x,y); maximum value:'+str(pyautogui.size())+'your present mouse location is:'+str(pyautogui.position()),'drag up(specify the amount  drag up by 100)','drag down( drag down by 100)','drag right( drag right by 100)','drag left( drag left by 100)']
         a2=['right click','left click','middle click','double click']
         a3=['type( type python)']
         a4=['press (after this the name of keys like press ctrl a)']
         a5=['show commands']
-        a7=['open (starts any file in your computer)','search(google serch)','quit(it will end the program)','shutdown','restart','capture image','capture screenshot','record audio for n seconds(specify time "n")']
+        a7=['open (starts any file in your computer)','search(google search)','quit(it will end the program)','shutdown','restart','capture image','capture screenshot','record audio for n seconds(specify time "n")']
 
         r=1
         a=a1+a8+a2+a3+a4+a5+a7
